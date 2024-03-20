@@ -19,6 +19,7 @@ public class buttonManager : MonoBehaviour
             for(int i = 0;i<50;i++)
             {
                 P1CMArray[i].GetComponent<Info>().setButton();
+                P2CMArray[i].GetComponent<Info>().setButton();
             }
         }
     }
