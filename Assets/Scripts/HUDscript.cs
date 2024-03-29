@@ -7,6 +7,7 @@ public class HUDscript : MonoBehaviour
     [SerializeField] GameObject one;
     [SerializeField] GameObject two;
     [SerializeField] GameObject three;
+    int waitOnLast;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,10 +26,11 @@ public class HUDscript : MonoBehaviour
 
     IEnumerator countDown()
     {
+        waitOnLast = Random.Range(2, 6);
         one.GetComponent<Animator>().SetTrigger("Fade");
         yield return new WaitForSeconds(2);
         two.GetComponent<Animator>().SetTrigger("Fade");
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(waitOnLast);
         three.GetComponent<Animator>().SetTrigger("Fade");
     }
 }
