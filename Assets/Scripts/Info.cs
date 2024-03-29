@@ -19,33 +19,32 @@ public class Info : MonoBehaviour
         
     }
 
-    public void setButton()
+    public void setButton(string buttonString)
     {
-        int randomNum = Random.Range(0, 8);
-        switch(randomNum)
+        switch(buttonString)
         {
-            case 0:
+            case "A":
                 buttonSp.sprite = SpriteArray[0];
                 break;
-            case 1:
+            case "B":
                 buttonSp.sprite = SpriteArray[1];
                 break;
-            case 2:
+            case "X":
                 buttonSp.sprite = SpriteArray[2];
                 break;
-            case 3:
+            case "Y":
                 buttonSp.sprite = SpriteArray[3];
                 break;
-            case 4:
+            case "UP":
                 buttonSp.sprite = SpriteArray[4];
                 break;
-            case 5:
+            case "DOWN":
                 buttonSp.sprite = SpriteArray[5];
                 break;
-            case 6:
+            case "LEFT":
                 buttonSp.sprite = SpriteArray[6];
                 break;
-            case 7:
+            case "RIGHT":
                 buttonSp.sprite = SpriteArray[7];
                 break;
         }
