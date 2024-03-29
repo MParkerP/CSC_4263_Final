@@ -8,8 +8,16 @@ public class PlayerController : MonoBehaviour
     private float p1Hor;
     private float p2Hor;
 
-    private int p1PlayerSelected = 0;
-    private int p2PlayerSelected = 0;
+    public int p1PlayerSelected = 0;
+    public int p2PlayerSelected = 0;
+
+    public GameObject LeftP1Text;
+    public GameObject LeftP2Text;
+
+    public GameObject RightP1Text;
+    public GameObject RightP2Text;
+
+    public GameObject PressStartText;
 
     void Update()
     {
@@ -22,12 +30,14 @@ public class PlayerController : MonoBehaviour
             if (p1Hor < 0)
             {
                 p1PlayerSelected = 1;
-                Debug.Log(p1PlayerSelected.ToString());
+                LeftP1Text.SetActive(true);
+                RightP1Text.SetActive(false);
             }
             else if (p1Hor > 0)
             {
                 p1PlayerSelected = 2;
-                Debug.Log(p1PlayerSelected.ToString());
+                LeftP1Text.SetActive(false);
+                RightP1Text.SetActive(true);
             }
 
 
@@ -35,13 +45,27 @@ public class PlayerController : MonoBehaviour
             if (p2Hor < 0)
             {
                 p2PlayerSelected = 1;
-                Debug.Log(p2PlayerSelected.ToString());
+                LeftP2Text.SetActive(true);
+                RightP2Text.SetActive(false);
             }
             else if(p2Hor > 0) 
             {
                 p2PlayerSelected = 2;
-                Debug.Log(p2PlayerSelected.ToString());
+                LeftP2Text.SetActive(false);
+                RightP2Text.SetActive(true);
+            }
+
+
+            //display press start text only if players are not selecting same side
+            if ((p2PlayerSelected == 1 && p1PlayerSelected == 2) || (p2PlayerSelected == 2 && p1PlayerSelected == 1))
+            {
+                PressStartText.SetActive(true);
+            }
+            else
+            {
+                PressStartText.SetActive(false);
             }
         }
+
     }
 }
