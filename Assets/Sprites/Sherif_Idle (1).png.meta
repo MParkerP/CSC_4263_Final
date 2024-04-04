@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: bcd25548299e15f48b3cb202e192d17b
+guid: e42b29d4bdc8a7f4f8e97303b56f54f1
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 50
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 4096
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -110,28 +110,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Sherif_Idle_0
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 64
-        width: 64
-        height: 64
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 91797d8c27051164a8bcccd0adc73b9d
-      internalID: 1018730263
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Sherif_Idle_1
+      name: Sherif_Idle (1)_0
       rect:
         serializedVersion: 2
         x: 0
@@ -145,8 +124,29 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c17d26223f51dd94088fcebcfe98a6f1
-      internalID: -1421363304
+      spriteID: 4cf6f3c43c7057c4dbf5c05811edbf91
+      internalID: -1535509393
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sherif_Idle (1)_1
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f27149eba37e734499f6009b0461375d
+      internalID: 410565676
       vertices: []
       indices: 
       edges: []
@@ -162,8 +162,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Sherif_Idle_0: 1018730263
-      Sherif_Idle_1: -1421363304
+      Sherif_Idle (1)_0: -1535509393
+      Sherif_Idle (1)_1: 410565676
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
