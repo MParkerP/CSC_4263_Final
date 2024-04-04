@@ -21,6 +21,7 @@ public class Info : MonoBehaviour
 
     public void setButton(string buttonString)
     {
+        GetComponent<SpriteRenderer>().color = new Color(255,0,0);
         switch(buttonString)
         {
             case "A":

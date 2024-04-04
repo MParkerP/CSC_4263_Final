@@ -17,7 +17,27 @@ public class PlayerController : MonoBehaviour
     public GameObject RightP1Text;
     public GameObject RightP2Text;
 
+    public GameObject MiddleP1Text;
+    public GameObject MiddleP2Text;
+
     public GameObject PressStartText;
+
+
+    //---------Player Input Definitions----------//
+    //'A' =>
+    //'B' =>
+    //'X' => 
+    //'Y' =>
+    //'UP' =>
+    //'DOWN' =>
+    //'LEFT' =>
+    //'RIGHT' =>
+
+
+    void StartGame()
+    {
+        gameState = "playing";
+    }
 
     void Update()
     {
@@ -25,6 +45,10 @@ public class PlayerController : MonoBehaviour
         {
             p1Hor = Input.GetAxis("Horizontal1");
             p2Hor = Input.GetAxis("Horizontal2");
+
+            //hide placeholder text for player selection
+            if (p1Hor != 0) { MiddleP1Text.SetActive(false); }
+            if (p2Hor != 0) { MiddleP2Text.SetActive(false); }
 
             //p1 horizontal input for player selection
             if (p1Hor < 0)
@@ -64,6 +88,17 @@ public class PlayerController : MonoBehaviour
             else
             {
                 PressStartText.SetActive(false);
+            }
+
+            //start game if start pressed while active
+            {
+                if (PressStartText.activeSelf == true)
+                {
+                    if (Input.GetAxis("Jump1") > 0 || Input.GetAxis("Jump2") > 0)
+                    {
+                        StartGame();
+                    }
+                }
             }
         }
 

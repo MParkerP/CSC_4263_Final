@@ -57,7 +57,7 @@ public class buttonManager : MonoBehaviour
         return combo;
     }
 
-    void makePlayerCombos()
+    public void makePlayerCombos()
     {
         P1ComboString = generateCombo(10, P1CMArray);
         P2ComboString = generateCombo(10, P2CMArray);
@@ -68,10 +68,10 @@ public class buttonManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-      if(Input.GetKeyDown("l"))
+/*      if(Input.GetKeyDown("l"))
         {
             makePlayerCombos();
-        }
+        }*/
     }
 
 }

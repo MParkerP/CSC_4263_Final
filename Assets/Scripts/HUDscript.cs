@@ -32,5 +32,6 @@ public class HUDscript : MonoBehaviour
         two.GetComponent<Animator>().SetTrigger("Fade");
         yield return new WaitForSeconds(waitOnLast);
         three.GetComponent<Animator>().SetTrigger("Fade");
+        GameObject.Find("ButtonManager").GetComponent<buttonManager>().makePlayerCombos();
     }
 }
