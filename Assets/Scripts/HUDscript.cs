@@ -50,6 +50,21 @@ public class HUDscript : MonoBehaviour
         GameObject.Find("ButtonManager").GetComponent<buttonManager>().makePlayerCombos();
     }
 
+    public void StartCountdown()
+    {
+        StartCoroutine(countDown());
+    }
+
+    public void StartPlayer1Shoot()
+    {
+        StartCoroutine(player1Shoot());
+    }
+
+    public void StartPlayer2Shoot()
+    {
+        StartCoroutine(player2Shoot());
+    }
+
     IEnumerator player1Shoot()
     {
         animator1.Shoot();

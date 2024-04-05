@@ -19,9 +19,20 @@ public class Info : MonoBehaviour
         
     }
 
+    public void ClearButton()
+    {
+        buttonSp.color = new Color(255,255, 255);
+    }
+
+    public void ButtonClicked(bool correct)
+    {
+        if (correct) { buttonSp.color = new Color(0, 255, 0); } //green
+        else { buttonSp.color = new Color(255, 0, 0); } //red
+    }
+
     public void setButton(string buttonString)
     {
-        GetComponent<SpriteRenderer>().color = new Color(255,0,0);
+        buttonSp.color = new Color(255,255,255);
         switch(buttonString)
         {
             case "A":

@@ -11,6 +11,30 @@ public class buttonManager : MonoBehaviour
     public string[] P1ComboString;
     public string[] P2ComboString;
 
+    public int P1ComboLength = 0;
+    public int P2ComboLength = 0;
+
+    public void IncreaseComboLength(int player)
+    {
+        if (player == 1) { P1ComboLength++; }
+        else if (player == 2) { P2ComboLength++; }
+    }
+
+    public void TakeButtonInfo(string button, int player)
+    {
+        if (player == 1)
+        {
+            if (button == P1ComboString[P1ComboLength])
+            {
+                P1CMArray[P1ComboLength].GetComponent<Info>().ButtonClicked(true);
+            }
+            else
+            {
+                P1CMArray[P1ComboLength].GetComponent<Info>().ButtonClicked(false);
+            }
+        }
+    }
+
 
     public string[] generateCombo(int length, GameObject[] buttonArray)
     {
@@ -68,10 +92,16 @@ public class buttonManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-/*      if(Input.GetKeyDown("l"))
+        if (P1ComboLength >= P1ComboString.Length && P1ComboString.Length > 0) 
         {
-            makePlayerCombos();
-        }*/
+            P1ComboLength = 0;
+            GameObject.Find("HUD").GetComponent<HUDscript>().StartPlayer1Shoot(); 
+        }
+        if (P2ComboLength >= P2ComboString.Length && P2ComboString.Length > 0) 
+        { 
+            P2ComboLength = 0;
+            GameObject.Find("HUD").GetComponent<HUDscript>().StartPlayer2Shoot(); 
+        }
     }
 
 }

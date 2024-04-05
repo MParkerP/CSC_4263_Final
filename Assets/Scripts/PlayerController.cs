@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     private float p2Hor;
 
     public int p1PlayerSelected = 0;
-    public int p2PlayerSelected = 0;
+    public int p2PlayerSelected = 2;
 
     public GameObject LeftP1Text;
     public GameObject LeftP2Text;
@@ -23,24 +23,45 @@ public class PlayerController : MonoBehaviour
     public GameObject PressStartText;
 
 
-    //---------Player Input Definitions----------//
-    //'A' =>
-    //'B' =>
-    //'X' => 
-    //'Y' =>
-    //'UP' =>
-    //'DOWN' =>
-    //'LEFT' =>
-    //'RIGHT' =>
+    //---------Player Input Definitions----------// 
+    //'A' => joystick button 0
+    //'B' => joystick button 4
+    //'X' => joystick button 2
+    //'Y' => joystick button 3
+    //'UP' => [7th axis] up
+    //'DOWN' => [7th axis] down
+    //'LEFT' => [6th axis] left
+    //'RIGHT' => [6th axis] right
 
+    bool canGetInput = true;
+    public float inputDelay = 0.4f;
+    IEnumerator InputDelay()
+    {
+        canGetInput = false;
+        yield return new WaitForSeconds(inputDelay);
+        canGetInput = true;
+    }
+
+    public void SendButtonInput(string button, int player)
+    {
+        if (canGetInput)
+        {
+            StartCoroutine(InputDelay());
+            GameObject.Find("ButtonManager").GetComponent<buttonManager>().TakeButtonInfo(button, player);
+            GameObject.Find("ButtonManager").GetComponent<buttonManager>().IncreaseComboLength(player);
+        }
+    }
 
     void StartGame()
     {
         gameState = "playing";
+        PressStartText.SetActive(false);
+        GameObject.Find("HUD").GetComponent<HUDscript>().StartCountdown();
     }
 
     void Update()
     {
+
         if (gameState == "starting")
         {
             p1Hor = Input.GetAxis("Horizontal1");
@@ -90,16 +111,44 @@ public class PlayerController : MonoBehaviour
                 PressStartText.SetActive(false);
             }
 
+
             //start game if start pressed while active
             {
                 if (PressStartText.activeSelf == true)
                 {
-                    if (Input.GetAxis("Jump1") > 0 || Input.GetAxis("Jump2") > 0)
+                    if (Input.GetAxis("A1") > 0 || Input.GetAxis("A2") > 0)
                     {
                         StartGame();
                     }
                 }
             }
+        }
+        else if (gameState == "playing")
+        {
+
+            //player 1 combo inputs
+            if (Input.GetAxis("A1") > 0) { SendButtonInput("A", 1); }
+            if (Input.GetAxis("B1") > 0) { SendButtonInput("B", 1); }
+            if (Input.GetAxis("X1") > 0) { SendButtonInput("X", 1); }
+            if (Input.GetAxis("Y1") > 0) { SendButtonInput("Y", 1); }
+
+            if (Input.GetAxis("Horizontal1") > 0) { SendButtonInput("RIGHT", 1); }
+            if (Input.GetAxis("Horizontal1") < 0) { SendButtonInput("LEFT", 1); }
+            if (Input.GetAxis("Vertical1") > 0) { SendButtonInput("UP", 1); }
+            if (Input.GetAxis("Vertical1") < 0) { SendButtonInput("DOWN", 1); }
+
+            //player 2 combo inputs
+            if (Input.GetAxis("A2") > 0) { SendButtonInput("A", 2); }
+            if (Input.GetAxis("B2") > 0) { SendButtonInput("B", 2); }
+            if (Input.GetAxis("X2") > 0) { SendButtonInput("X", 2); }
+            if (Input.GetAxis("Y2") > 0) { SendButtonInput("Y", 2); }
+
+            if (Input.GetAxis("Horizontal2") > 0) { SendButtonInput("RIGHT", 2); }
+            if (Input.GetAxis("Horizontal2") < 0) { SendButtonInput("LEFT", 2); }
+            if (Input.GetAxis("Vertical2") > 0) { SendButtonInput("UP", 2); }
+            if (Input.GetAxis("Vertical2") < 0) { SendButtonInput("DOWN", 2); }
+
+
         }
 
     }
