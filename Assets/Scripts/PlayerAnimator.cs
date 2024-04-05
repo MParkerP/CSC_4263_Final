@@ -26,4 +26,37 @@ public class PlayerAnimator : MonoBehaviour
     {
         playerAn.SetTrigger("Idle");
     }
+
+    public void Die()
+    {
+        playerAn.SetTrigger("Die");
+    }
+
+    public void StartPlayerShoot()
+    {
+        StartCoroutine(playerShoot());
+    }
+
+    public void StartPlayerDeath()
+    {
+        StartCoroutine(playerDeath());
+    }
+
+    IEnumerator playerShoot()
+    {
+        Shoot();
+        yield return new WaitForSeconds(2);
+        Idle();
+    }
+
+    IEnumerator playerDeath()
+    {
+        yield return new WaitForSeconds(0.5f);
+        Die();
+        yield return new WaitForSeconds(5);
+        Idle();
+    }
+
 }
+
+

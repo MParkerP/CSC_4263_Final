@@ -95,12 +95,14 @@ public class buttonManager : MonoBehaviour
         if (P1ComboLength >= P1ComboString.Length && P1ComboString.Length > 0) 
         {
             P1ComboLength = 0;
-            GameObject.Find("HUD").GetComponent<HUDscript>().StartPlayer1Shoot(); 
+            GameObject.Find("Player1").GetComponent<PlayerAnimator>().StartPlayerShoot();
+            GameObject.Find("Player2").GetComponent<PlayerAnimator>().StartPlayerDeath();
         }
         if (P2ComboLength >= P2ComboString.Length && P2ComboString.Length > 0) 
         { 
             P2ComboLength = 0;
-            GameObject.Find("HUD").GetComponent<HUDscript>().StartPlayer2Shoot(); 
+            GameObject.Find("Player2").GetComponent<PlayerAnimator>().StartPlayerShoot();
+            GameObject.Find("Player1").GetComponent<PlayerAnimator>().StartPlayerDeath();
         }
     }
 

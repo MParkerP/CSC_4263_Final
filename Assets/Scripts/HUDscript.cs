@@ -9,14 +9,14 @@ public class HUDscript : MonoBehaviour
     [SerializeField] GameObject three;
     int waitOnLast;
 
-    PlayerAnimator animator1;
-    PlayerAnimator animator2;
+    PlayerAnimator player1;
+    PlayerAnimator player2;
 
     // Start is called before the first frame update
     void Start()
     {
-        animator1 = GameObject.Find("Player1").GetComponent<PlayerAnimator>();
-        animator2 = GameObject.Find("Player2").GetComponent<PlayerAnimator>();
+        player1 = GameObject.Find("Player1").GetComponent<PlayerAnimator>();
+        player2 = GameObject.Find("Player2").GetComponent<PlayerAnimator>();
 
     }
 
@@ -30,12 +30,12 @@ public class HUDscript : MonoBehaviour
 
         if (Input.GetKeyDown("r"))
         {
-            StartCoroutine(player1Shoot());
+            player1.StartPlayerShoot();
         }
 
         if (Input.GetKeyDown("t"))
         {
-            StartCoroutine(player2Shoot());
+            player2.StartPlayerShoot();
         }
     }
 
@@ -54,28 +54,6 @@ public class HUDscript : MonoBehaviour
     {
         StartCoroutine(countDown());
     }
-
-    public void StartPlayer1Shoot()
-    {
-        StartCoroutine(player1Shoot());
-    }
-
-    public void StartPlayer2Shoot()
-    {
-        StartCoroutine(player2Shoot());
-    }
-
-    IEnumerator player1Shoot()
-    {
-        animator1.Shoot();
-        yield return new WaitForSeconds(2);
-        animator1.Idle();
-    }
-
-    IEnumerator player2Shoot()
-    {
-        animator2.Shoot();
-        yield return new WaitForSeconds(2);
-        animator2.Idle();
-    }
 }
+
+   
