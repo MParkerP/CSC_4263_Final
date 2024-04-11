@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     private float p2Hor;
 
     public int p1PlayerSelected = 0;
-    public int p2PlayerSelected = 2;
+    public int p2PlayerSelected = 0;
 
     public GameObject LeftP1Text;
     public GameObject LeftP2Text;
@@ -21,6 +21,10 @@ public class PlayerController : MonoBehaviour
     public GameObject MiddleP2Text;
 
     public GameObject PressStartText;
+    public GameObject SelectPlayerText;
+
+    [SerializeField] private bool p1DpadOpen = true;
+    [SerializeField] private bool p2DpadOpen = true;
 
 
     //---------Player Input Definitions----------// 
@@ -33,36 +37,96 @@ public class PlayerController : MonoBehaviour
     //'LEFT' => [6th axis] left
     //'RIGHT' => [6th axis] right
 
-    bool canGetInput = true;
-    public float inputDelay = 0.4f;
-    IEnumerator InputDelay()
-    {
-        canGetInput = false;
-        yield return new WaitForSeconds(inputDelay);
-        canGetInput = true;
-    }
+
+    [SerializeField] private bool P1InputEnabled = true;
+    [SerializeField] private bool P2InputEnabled = true;
+
+    [SerializeField] private int frozenInputTime = 2;
+
+    private HUDscript hudScript;
 
     public void SendButtonInput(string button, int player)
     {
-        if (canGetInput)
+        if (player == 1)
         {
-            StartCoroutine(InputDelay());
-            GameObject.Find("ButtonManager").GetComponent<buttonManager>().TakeButtonInfo(button, player);
-            GameObject.Find("ButtonManager").GetComponent<buttonManager>().IncreaseComboLength(player);
+            if (P1InputEnabled)
+            {
+                GameObject.Find("ButtonManager").GetComponent<buttonManager>().TakeButtonInfo(button, player);
+            }
         }
+        else if (player == 2)
+        {
+            if (P2InputEnabled)
+            {
+                GameObject.Find("ButtonManager").GetComponent<buttonManager>().TakeButtonInfo(button, player);
+            }
+        }
+    }
+
+    public void SetGameState(string state)
+    {
+        gameState = state;
     }
 
     void StartGame()
     {
         gameState = "playing";
         PressStartText.SetActive(false);
-        GameObject.Find("HUD").GetComponent<HUDscript>().StartCountdown();
+        hudScript = GameObject.Find("HUD").GetComponent<HUDscript>();
+        hudScript.StartCountdown();
+    }
+
+    public void FreezeInput(int player)
+    {
+        StartCoroutine(FreezeInputRoutine(player));
+    }
+
+    IEnumerator FreezeInputRoutine(int player)
+    {
+        if (player == 1)
+        {
+            P1InputEnabled = false;
+            hudScript.P1InputCrossedOut.SetActive(true);
+            yield return new WaitForSeconds(frozenInputTime);
+            hudScript.P1InputCrossedOut.SetActive(false);
+            GameObject.Find("ButtonManager").GetComponent<buttonManager>().ResetButtons(1);
+            P1InputEnabled = true;
+        }
+        else if (player == 2)
+        {
+            P2InputEnabled = false;
+            hudScript.P2InputCrossedOut.SetActive(true);
+            yield return new WaitForSeconds(frozenInputTime);
+            hudScript.P2InputCrossedOut.SetActive(false);
+            GameObject.Find("ButtonManager").GetComponent<buttonManager>().ResetButtons(2);
+            P2InputEnabled = true;
+        }
+    }
+
+    private void HandleDpadInput(string button, int player)
+    {
+        if (player == 1)
+        {
+            if (p1DpadOpen)
+            {
+                SendButtonInput(button, player);
+                p1DpadOpen = false;
+            }
+        }
+        else if (player == 2)
+        {
+            if (p2DpadOpen)
+            {
+                SendButtonInput(button, player);
+                p2DpadOpen = false;
+            }
+        }
     }
 
     void Update()
     {
 
-        if (gameState == "starting")
+        if (gameState == "player select")
         {
             p1Hor = Input.GetAxis("Horizontal1");
             p2Hor = Input.GetAxis("Horizontal2");
@@ -105,10 +169,12 @@ public class PlayerController : MonoBehaviour
             if ((p2PlayerSelected == 1 && p1PlayerSelected == 2) || (p2PlayerSelected == 2 && p1PlayerSelected == 1))
             {
                 PressStartText.SetActive(true);
+                SelectPlayerText.SetActive(false);
             }
             else
             {
                 PressStartText.SetActive(false);
+                SelectPlayerText.SetActive(true);
             }
 
 
@@ -127,26 +193,30 @@ public class PlayerController : MonoBehaviour
         {
 
             //player 1 combo inputs
-            if (Input.GetAxis("A1") > 0) { SendButtonInput("A", 1); }
-            if (Input.GetAxis("B1") > 0) { SendButtonInput("B", 1); }
-            if (Input.GetAxis("X1") > 0) { SendButtonInput("X", 1); }
-            if (Input.GetAxis("Y1") > 0) { SendButtonInput("Y", 1); }
+            if (Input.GetButtonDown("A1")) { SendButtonInput("A", 1); }
+            if (Input.GetButtonDown("B1")) { SendButtonInput("B", 1); }
+            if (Input.GetButtonDown("X1")) { SendButtonInput("X", 1); }
+            if (Input.GetButtonDown("Y1")) { SendButtonInput("Y", 1); }
 
-            if (Input.GetAxis("Horizontal1") > 0) { SendButtonInput("RIGHT", 1); }
-            if (Input.GetAxis("Horizontal1") < 0) { SendButtonInput("LEFT", 1); }
-            if (Input.GetAxis("Vertical1") > 0) { SendButtonInput("UP", 1); }
-            if (Input.GetAxis("Vertical1") < 0) { SendButtonInput("DOWN", 1); }
+            if (Input.GetAxis("Horizontal1") > 0) { HandleDpadInput("RIGHT", 1); }
+            if (Input.GetAxis("Horizontal1") < 0) { HandleDpadInput("LEFT", 1); }
+            if (Input.GetAxis("Vertical1") > 0) { HandleDpadInput("UP", 1); }
+            if (Input.GetAxis("Vertical1") < 0) { HandleDpadInput("DOWN", 1); }
+
+            if (Input.GetAxis("Horizontal1") == 0 && Input.GetAxis("Vertical1") == 0) { p1DpadOpen = true; }
 
             //player 2 combo inputs
-            if (Input.GetAxis("A2") > 0) { SendButtonInput("A", 2); }
-            if (Input.GetAxis("B2") > 0) { SendButtonInput("B", 2); }
-            if (Input.GetAxis("X2") > 0) { SendButtonInput("X", 2); }
-            if (Input.GetAxis("Y2") > 0) { SendButtonInput("Y", 2); }
+            if (Input.GetButtonDown("A2")) { SendButtonInput("A", 2); }
+            if (Input.GetButtonDown("B2")) { SendButtonInput("B", 2); }
+            if (Input.GetButtonDown("X2")) { SendButtonInput("X", 2); }
+            if (Input.GetButtonDown("Y2")) { SendButtonInput("Y", 2); }
 
-            if (Input.GetAxis("Horizontal2") > 0) { SendButtonInput("RIGHT", 2); }
-            if (Input.GetAxis("Horizontal2") < 0) { SendButtonInput("LEFT", 2); }
-            if (Input.GetAxis("Vertical2") > 0) { SendButtonInput("UP", 2); }
-            if (Input.GetAxis("Vertical2") < 0) { SendButtonInput("DOWN", 2); }
+            if (Input.GetAxis("Horizontal2") > 0) { HandleDpadInput("RIGHT", 2); }
+            if (Input.GetAxis("Horizontal2") < 0) { HandleDpadInput("LEFT", 2); }
+            if (Input.GetAxis("Vertical2") > 0) { HandleDpadInput("UP", 2); }
+            if (Input.GetAxis("Vertical2") < 0) { HandleDpadInput("DOWN", 2); }
+
+            if (Input.GetAxis("Horizontal2") == 0 && Input.GetAxis("Vertical2") == 0) { p2DpadOpen = true; }
 
 
         }

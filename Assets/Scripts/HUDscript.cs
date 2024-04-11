@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class HUDscript : MonoBehaviour
@@ -12,6 +13,18 @@ public class HUDscript : MonoBehaviour
     PlayerAnimator player1;
     PlayerAnimator player2;
 
+    [SerializeField] private int roundCount = 1;
+    public TextMeshProUGUI roundCountText;
+
+    [SerializeField] private GameObject[] player1Lives;
+    [SerializeField] private GameObject[] player2Lives;
+
+    private int p1LivesLost = 0;
+    private int p2LivesLost = 0;
+
+    public GameObject P1InputCrossedOut;
+    public GameObject P2InputCrossedOut;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -20,10 +33,30 @@ public class HUDscript : MonoBehaviour
 
     }
 
+    public void ReduceLives(int player)
+    {
+        if (player == 1)
+        {
+            player1Lives[p1LivesLost].SetActive(false);
+            p1LivesLost++;
+        }
+        else if (player == 2)
+        {
+            player2Lives[p2LivesLost].SetActive(false);
+            p2LivesLost++;
+        }
+    }
+
+    public void IncreaseRound()
+    {
+        roundCount++;
+        roundCountText.text = "ROUND: " + roundCount.ToString();
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("l"))
+/*        if (Input.GetKeyDown("l"))
         {
             StartCoroutine(countDown());
         }
@@ -36,7 +69,7 @@ public class HUDscript : MonoBehaviour
         if (Input.GetKeyDown("t"))
         {
             player2.StartPlayerShoot();
-        }
+        }*/
     }
 
     IEnumerator countDown()

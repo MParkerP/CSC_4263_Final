@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class buttonManager : MonoBehaviour
 {
@@ -13,6 +14,19 @@ public class buttonManager : MonoBehaviour
 
     public int P1ComboLength = 0;
     public int P2ComboLength = 0;
+
+    private PlayerController playerController;
+    private HUDscript hudScript;
+
+    [SerializeField] private int roundDelay = 5;
+
+
+
+    private void Start()
+    {
+        playerController = GameObject.Find("PlayerController").GetComponent<PlayerController>();
+        hudScript = GameObject.Find("HUD").GetComponent <HUDscript>();
+    }
 
     public void IncreaseComboLength(int player)
     {
@@ -27,10 +41,37 @@ public class buttonManager : MonoBehaviour
             if (button == P1ComboString[P1ComboLength])
             {
                 P1CMArray[P1ComboLength].GetComponent<Info>().ButtonClicked(true);
+                P1ComboLength++;
             }
             else
             {
                 P1CMArray[P1ComboLength].GetComponent<Info>().ButtonClicked(false);
+                playerController.FreezeInput(1);
+            }
+        }
+        else if (player == 2)
+        {
+            if (button == P2ComboString[P2ComboLength])
+            {
+                P2CMArray[P2ComboLength].GetComponent<Info>().ButtonClicked(true);
+                P2ComboLength++;
+            }
+            else
+            {
+                P2CMArray[P2ComboLength].GetComponent<Info>().ButtonClicked(false);
+                playerController.FreezeInput(2);
+            }
+        }
+    }
+
+    public void ResetButtons(int player)
+    {
+        if (player == 1)
+        {
+            P1ComboLength = 0;
+            foreach(GameObject buttonImage in P1CMArray)
+            {
+                buttonImage.GetComponent<SpriteRenderer>().color = Color.white;
             }
         }
     }
@@ -85,6 +126,34 @@ public class buttonManager : MonoBehaviour
     {
         P1ComboString = generateCombo(10, P1CMArray);
         P2ComboString = generateCombo(10, P2CMArray);
+
+}
+
+    public void StartNewRound()
+    {
+        StartCoroutine(SetupNextRound());
+    }
+
+    IEnumerator SetupNextRound()
+    {
+        playerController.SetGameState("RoundTransition");
+        hideAllButtons();
+        yield return new WaitForSeconds(roundDelay);
+        playerController.SetGameState("playing");
+        hudScript.IncreaseRound();
+        hudScript.StartCountdown();
+    }
+
+    public void hideAllButtons()
+    {
+        foreach(GameObject buttonImage in P1CMArray)
+        {
+            buttonImage.GetComponent<SpriteRenderer>().sprite = null;
+        }
+        foreach (GameObject buttonImage in P2CMArray)
+        {
+            buttonImage.GetComponent<SpriteRenderer>().sprite = null;
+        }
     }
 
 
@@ -92,17 +161,26 @@ public class buttonManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //player 1 wins round
         if (P1ComboLength >= P1ComboString.Length && P1ComboString.Length > 0) 
         {
             P1ComboLength = 0;
+            P2ComboLength = 0;
+            StartNewRound();
             GameObject.Find("Player1").GetComponent<PlayerAnimator>().StartPlayerShoot();
             GameObject.Find("Player2").GetComponent<PlayerAnimator>().StartPlayerDeath();
+            hudScript.ReduceLives(2);
         }
+
+        //player 2 wins round
         if (P2ComboLength >= P2ComboString.Length && P2ComboString.Length > 0) 
-        { 
+        {
+            P1ComboLength = 0;
             P2ComboLength = 0;
+            StartNewRound();
             GameObject.Find("Player2").GetComponent<PlayerAnimator>().StartPlayerShoot();
             GameObject.Find("Player1").GetComponent<PlayerAnimator>().StartPlayerDeath();
+            hudScript.ReduceLives(1);
         }
     }
 

@@ -13,11 +13,6 @@ public class Info : MonoBehaviour
         buttonSp = GetComponent<SpriteRenderer>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void ClearButton()
     {
@@ -27,7 +22,10 @@ public class Info : MonoBehaviour
     public void ButtonClicked(bool correct)
     {
         if (correct) { buttonSp.color = new Color(0, 255, 0); } //green
-        else { buttonSp.color = new Color(255, 0, 0); } //red
+        else 
+        {
+            buttonSp.color = new Color(255, 0, 0); //red
+        }
     }
 
     public void setButton(string buttonString)
