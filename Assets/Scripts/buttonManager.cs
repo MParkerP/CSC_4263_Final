@@ -31,7 +31,8 @@ public class buttonManager : MonoBehaviour
     public void IncreaseComboLength(int player)
     {
         if (player == 1) { P1ComboLength++; }
-        else if (player == 2) { P2ComboLength++; }
+        
+        if (player == 2) { P2ComboLength++; }
     }
 
     public void TakeButtonInfo(string button, int player)
@@ -49,7 +50,8 @@ public class buttonManager : MonoBehaviour
                 playerController.FreezeInput(1);
             }
         }
-        else if (player == 2)
+        
+        if (player == 2)
         {
             if (button == P2ComboString[P2ComboLength])
             {
@@ -70,6 +72,15 @@ public class buttonManager : MonoBehaviour
         {
             P1ComboLength = 0;
             foreach(GameObject buttonImage in P1CMArray)
+            {
+                buttonImage.GetComponent<SpriteRenderer>().color = Color.white;
+            }
+        }
+        
+        if (player == 2)
+        {
+            P2ComboLength = 0;
+            foreach (GameObject buttonImage in P2CMArray)
             {
                 buttonImage.GetComponent<SpriteRenderer>().color = Color.white;
             }
@@ -167,8 +178,8 @@ public class buttonManager : MonoBehaviour
             P1ComboLength = 0;
             P2ComboLength = 0;
             StartNewRound();
-            GameObject.Find("Player1").GetComponent<PlayerAnimator>().StartPlayerShoot();
-            GameObject.Find("Player2").GetComponent<PlayerAnimator>().StartPlayerDeath();
+            GameObject.Find("Sheriff").GetComponent<PlayerAnimator>().StartPlayerShoot();
+            GameObject.Find("Bandit").GetComponent<PlayerAnimator>().StartPlayerDeath();
             hudScript.ReduceLives(2);
         }
 
@@ -178,8 +189,8 @@ public class buttonManager : MonoBehaviour
             P1ComboLength = 0;
             P2ComboLength = 0;
             StartNewRound();
-            GameObject.Find("Player2").GetComponent<PlayerAnimator>().StartPlayerShoot();
-            GameObject.Find("Player1").GetComponent<PlayerAnimator>().StartPlayerDeath();
+            GameObject.Find("Bandit").GetComponent<PlayerAnimator>().StartPlayerShoot();
+            GameObject.Find("Sheriff").GetComponent<PlayerAnimator>().StartPlayerDeath();
             hudScript.ReduceLives(1);
         }
     }

@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Transactions;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -45,20 +47,112 @@ public class PlayerController : MonoBehaviour
 
     private HUDscript hudScript;
 
+    private PlayerInput playerInput;
+
+
+    private void Awake()
+    {
+        playerInput = GetComponent<PlayerInput>();
+        playerInput.onActionTriggered += PlayerInput_onActionTriggered;
+    }
+
+    private void PlayerInput_onActionTriggered(InputAction.CallbackContext context)
+    {
+        //only do actions when button is pressed (rather than on being held or released)
+        if (context.started)
+        {
+            //handle inputs during player selection
+            if (gameState == "player select")
+            {
+                //allow usb controller to select player
+                if (context.action == playerInput.actions.FindAction("LEFT1"))
+                {
+                    p1PlayerSelected = 1;
+                    LeftP1Text.SetActive(true);
+                    RightP1Text.SetActive(false);
+                    MiddleP1Text.SetActive(false);
+                }
+
+                if (context.action == playerInput.actions.FindAction("RIGHT1"))
+                {
+                    p1PlayerSelected = 2;
+                    LeftP1Text.SetActive(false);
+                    RightP1Text.SetActive(true);
+                    MiddleP1Text.SetActive(false);
+                }
+
+                //allow ps controller to select player
+                if (context.action == playerInput.actions.FindAction("LEFT2"))
+                {
+                    p2PlayerSelected = 1;
+                    LeftP2Text.SetActive(true);
+                    RightP2Text.SetActive(false);
+                    MiddleP2Text.SetActive(false);
+                }
+
+                if (context.action == playerInput.actions.FindAction("RIGHT2"))
+                {
+                    p2PlayerSelected = 2;
+                    LeftP2Text.SetActive(false);
+                    RightP2Text.SetActive(true);
+                    MiddleP2Text.SetActive(false);
+                }
+
+                //start game if start pressed while active
+                {
+                    if (PressStartText.activeSelf == true)
+                    {
+                        if (context.action == playerInput.actions.FindAction("A1") || context.action == playerInput.actions.FindAction("A2"))
+                        {
+                            StartGame();
+                        }
+                    }
+                }
+            }
+            //handle inputs after player selection
+            else if (gameState == "playing")
+            {
+                //player 1 combo inputs
+                if (context.action == playerInput.actions.FindAction("A1")) { SendButtonInput("A", p1PlayerSelected); }
+                if (context.action == playerInput.actions.FindAction("B1")) { SendButtonInput("B", p1PlayerSelected); }
+                if (context.action == playerInput.actions.FindAction("X1")) { SendButtonInput("X", p1PlayerSelected); }
+                if (context.action == playerInput.actions.FindAction("Y1")) { SendButtonInput("Y", p1PlayerSelected); }
+
+                if (context.action == playerInput.actions.FindAction("UP1")) { SendButtonInput("UP", p1PlayerSelected); }
+                if (context.action == playerInput.actions.FindAction("DOWN1")) { SendButtonInput("DOWN", p1PlayerSelected); }
+                if (context.action == playerInput.actions.FindAction("LEFT1")) { SendButtonInput("LEFT", p1PlayerSelected); }
+                if (context.action == playerInput.actions.FindAction("RIGHT1")) { SendButtonInput("RIGHT", p1PlayerSelected); }
+
+                //player 2 combo inputs
+                if (context.action == playerInput.actions.FindAction("A2")) { SendButtonInput("A", p2PlayerSelected); }
+                if (context.action == playerInput.actions.FindAction("B2")) { SendButtonInput("B", p2PlayerSelected); }
+                if (context.action == playerInput.actions.FindAction("X2")) { SendButtonInput("X", p2PlayerSelected); }
+                if (context.action == playerInput.actions.FindAction("Y2")) { SendButtonInput("Y", p2PlayerSelected); }
+
+                if (context.action == playerInput.actions.FindAction("UP2")) { SendButtonInput("UP", p2PlayerSelected); }
+                if (context.action == playerInput.actions.FindAction("DOWN2")) { SendButtonInput("DOWN", p2PlayerSelected); }
+                if (context.action == playerInput.actions.FindAction("LEFT2")) { SendButtonInput("LEFT", p2PlayerSelected); }
+                if (context.action == playerInput.actions.FindAction("RIGHT2")) { SendButtonInput("RIGHT", p2PlayerSelected); }
+            }
+        }
+    }
+
     public void SendButtonInput(string button, int player)
     {
+        Debug.Log("sending " + button + " to player " + player.ToString());
         if (player == 1)
         {
             if (P1InputEnabled)
             {
-                GameObject.Find("ButtonManager").GetComponent<buttonManager>().TakeButtonInfo(button, player);
+                GameObject.Find("ButtonManager").GetComponent<buttonManager>().TakeButtonInfo(button, 1);
             }
         }
-        else if (player == 2)
+        
+        if (player == 2)
         {
             if (P2InputEnabled)
             {
-                GameObject.Find("ButtonManager").GetComponent<buttonManager>().TakeButtonInfo(button, player);
+                GameObject.Find("ButtonManager").GetComponent<buttonManager>().TakeButtonInfo(button, 2);
             }
         }
     }
@@ -92,7 +186,8 @@ public class PlayerController : MonoBehaviour
             GameObject.Find("ButtonManager").GetComponent<buttonManager>().ResetButtons(1);
             P1InputEnabled = true;
         }
-        else if (player == 2)
+        
+        if (player == 2)
         {
             P2InputEnabled = false;
             hudScript.P2InputCrossedOut.SetActive(true);
@@ -113,7 +208,8 @@ public class PlayerController : MonoBehaviour
                 p1DpadOpen = false;
             }
         }
-        else if (player == 2)
+        
+        if (player == 2)
         {
             if (p2DpadOpen)
             {
@@ -128,43 +224,6 @@ public class PlayerController : MonoBehaviour
 
         if (gameState == "player select")
         {
-            p1Hor = Input.GetAxis("Horizontal1");
-            p2Hor = Input.GetAxis("Horizontal2");
-
-            //hide placeholder text for player selection
-            if (p1Hor != 0) { MiddleP1Text.SetActive(false); }
-            if (p2Hor != 0) { MiddleP2Text.SetActive(false); }
-
-            //p1 horizontal input for player selection
-            if (p1Hor < 0)
-            {
-                p1PlayerSelected = 1;
-                LeftP1Text.SetActive(true);
-                RightP1Text.SetActive(false);
-            }
-            else if (p1Hor > 0)
-            {
-                p1PlayerSelected = 2;
-                LeftP1Text.SetActive(false);
-                RightP1Text.SetActive(true);
-            }
-
-
-            //p2 horizontal input for player selection
-            if (p2Hor < 0)
-            {
-                p2PlayerSelected = 1;
-                LeftP2Text.SetActive(true);
-                RightP2Text.SetActive(false);
-            }
-            else if(p2Hor > 0) 
-            {
-                p2PlayerSelected = 2;
-                LeftP2Text.SetActive(false);
-                RightP2Text.SetActive(true);
-            }
-
-
             //display press start text only if players are not selecting same side
             if ((p2PlayerSelected == 1 && p1PlayerSelected == 2) || (p2PlayerSelected == 2 && p1PlayerSelected == 1))
             {
@@ -176,49 +235,6 @@ public class PlayerController : MonoBehaviour
                 PressStartText.SetActive(false);
                 SelectPlayerText.SetActive(true);
             }
-
-
-            //start game if start pressed while active
-            {
-                if (PressStartText.activeSelf == true)
-                {
-                    if (Input.GetAxis("A1") > 0 || Input.GetAxis("A2") > 0)
-                    {
-                        StartGame();
-                    }
-                }
-            }
-        }
-        else if (gameState == "playing")
-        {
-
-            //player 1 combo inputs
-            if (Input.GetButtonDown("A1")) { SendButtonInput("A", 1); }
-            if (Input.GetButtonDown("B1")) { SendButtonInput("B", 1); }
-            if (Input.GetButtonDown("X1")) { SendButtonInput("X", 1); }
-            if (Input.GetButtonDown("Y1")) { SendButtonInput("Y", 1); }
-
-            if (Input.GetAxis("Horizontal1") > 0) { HandleDpadInput("RIGHT", 1); }
-            if (Input.GetAxis("Horizontal1") < 0) { HandleDpadInput("LEFT", 1); }
-            if (Input.GetAxis("Vertical1") > 0) { HandleDpadInput("UP", 1); }
-            if (Input.GetAxis("Vertical1") < 0) { HandleDpadInput("DOWN", 1); }
-
-            if (Input.GetAxis("Horizontal1") == 0 && Input.GetAxis("Vertical1") == 0) { p1DpadOpen = true; }
-
-            //player 2 combo inputs
-            if (Input.GetButtonDown("A2")) { SendButtonInput("A", 2); }
-            if (Input.GetButtonDown("B2")) { SendButtonInput("B", 2); }
-            if (Input.GetButtonDown("X2")) { SendButtonInput("X", 2); }
-            if (Input.GetButtonDown("Y2")) { SendButtonInput("Y", 2); }
-
-            if (Input.GetAxis("Horizontal2") > 0) { HandleDpadInput("RIGHT", 2); }
-            if (Input.GetAxis("Horizontal2") < 0) { HandleDpadInput("LEFT", 2); }
-            if (Input.GetAxis("Vertical2") > 0) { HandleDpadInput("UP", 2); }
-            if (Input.GetAxis("Vertical2") < 0) { HandleDpadInput("DOWN", 2); }
-
-            if (Input.GetAxis("Horizontal2") == 0 && Input.GetAxis("Vertical2") == 0) { p2DpadOpen = true; }
-
-
         }
 
     }

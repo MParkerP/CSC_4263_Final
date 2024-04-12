@@ -28,8 +28,8 @@ public class HUDscript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player1 = GameObject.Find("Player1").GetComponent<PlayerAnimator>();
-        player2 = GameObject.Find("Player2").GetComponent<PlayerAnimator>();
+        player1 = GameObject.Find("Sheriff").GetComponent<PlayerAnimator>();
+        player2 = GameObject.Find("Bandit").GetComponent<PlayerAnimator>();
 
     }
 
@@ -40,7 +40,8 @@ public class HUDscript : MonoBehaviour
             player1Lives[p1LivesLost].SetActive(false);
             p1LivesLost++;
         }
-        else if (player == 2)
+
+        if (player == 2)
         {
             player2Lives[p2LivesLost].SetActive(false);
             p2LivesLost++;
