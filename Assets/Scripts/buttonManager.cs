@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -150,9 +151,24 @@ public class buttonManager : MonoBehaviour
         playerController.SetGameState("RoundTransition");
         hideAllButtons();
         yield return new WaitForSeconds(roundDelay);
-        playerController.SetGameState("playing");
-        hudScript.IncreaseRound();
-        hudScript.StartCountdown();
+
+        int p1Lives = hudScript.livesCount - hudScript.p1LivesLost;
+        int p2Lives = hudScript.livesCount - hudScript.p2LivesLost;
+
+        if (p1Lives <= 0 || p2Lives <= 0)
+        {
+            if (p1Lives <= 0) { hudScript.ResetGame(2); } 
+            if (p2Lives <= 0) { hudScript.ResetGame(1); } 
+            
+        }
+        else
+        {
+            playerController.SetGameState("playing");
+            hudScript.IncreaseRound();
+            hudScript.StartCountdown();
+        }
+
+
     }
 
     public void hideAllButtons()
