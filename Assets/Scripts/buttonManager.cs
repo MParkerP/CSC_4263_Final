@@ -18,6 +18,7 @@ public class buttonManager : MonoBehaviour
 
     private PlayerController playerController;
     private HUDscript hudScript;
+    private SoundManager soundManager;
 
     [SerializeField] private int roundDelay = 5;
 
@@ -25,6 +26,7 @@ public class buttonManager : MonoBehaviour
 
     private void Start()
     {
+        soundManager = GameObject.Find("SoundManager").GetComponent<SoundManager>();
         playerController = GameObject.Find("PlayerController").GetComponent<PlayerController>();
         hudScript = GameObject.Find("HUD").GetComponent <HUDscript>();
     }
@@ -44,11 +46,13 @@ public class buttonManager : MonoBehaviour
             {
                 P1CMArray[P1ComboLength].GetComponent<Info>().ButtonClicked(true);
                 P1ComboLength++;
+                soundManager.PlayCorrectSound();
             }
             else
             {
                 P1CMArray[P1ComboLength].GetComponent<Info>().ButtonClicked(false);
                 playerController.FreezeInput(1);
+                soundManager.PlayIncorrectSound();
             }
         }
         
@@ -58,11 +62,13 @@ public class buttonManager : MonoBehaviour
             {
                 P2CMArray[P2ComboLength].GetComponent<Info>().ButtonClicked(true);
                 P2ComboLength++;
+                soundManager.PlayCorrectSound();
             }
             else
             {
                 P2CMArray[P2ComboLength].GetComponent<Info>().ButtonClicked(false);
                 playerController.FreezeInput(2);
+                soundManager.PlayIncorrectSound();
             }
         }
     }

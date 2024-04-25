@@ -100,13 +100,13 @@ public class PlayerController : MonoBehaviour
 
                 //start game if start pressed while active
                 {
-                    if (PressStartText.activeSelf == true)
-                    {
+                  //  if (PressStartText.activeSelf == true)
+                   // {
                         if (context.action == playerInput.actions.FindAction("A1") || context.action == playerInput.actions.FindAction("A2"))
                         {
                             StartGame();
                         }
-                    }
+                    //}
                 }
             }
             //handle inputs after player selection

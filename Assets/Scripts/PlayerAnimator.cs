@@ -20,6 +20,7 @@ public class PlayerAnimator : MonoBehaviour
     public void Shoot()
     {
         playerAn.SetTrigger("Shoot");
+        
     }
 
     public void Idle()
