@@ -61,7 +61,7 @@ public class HUDscript : MonoBehaviour
 
         winnerBanner.SetActive(true);
         yield return new WaitForSeconds(7);
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(0);
     }
 
     public void ResetGame(int playerWinner)

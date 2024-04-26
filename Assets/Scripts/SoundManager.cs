@@ -11,6 +11,8 @@ public class SoundManager : MonoBehaviour
     [SerializeField] AudioClip countDownMusic;
     [SerializeField] AudioClip whipSound;
     [SerializeField] AudioClip gameMusic;
+    [SerializeField] AudioClip pauseSound;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,13 +28,28 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    public void PlayButtonHover()
+    {
+        audioSource.PlayOneShot(correct);
+    }
+
+    public void PlayPause()
+    {
+        audioSource.PlayOneShot(pauseSound);
+    }
+
+    public void PlayButtonClick()
+    {
+        audioSource.PlayOneShot(whipSound);
+    }
+
     public void PlayCorrectSound()
     {
-        StartCoroutine(CorrectSound());
+        audioSource.PlayOneShot(correct);
     }
     public void PlayIncorrectSound()
     {
-        StartCoroutine(IncorrectSound());
+        audioSource.PlayOneShot(incorrect);
     }
     public void PlayMenuMusic()
     {
@@ -46,8 +63,7 @@ public class SoundManager : MonoBehaviour
     }
     public void PlayWhipSound()
     {
-        audioSource.clip = whipSound;
-        audioSource.Play();
+        audioSource.PlayOneShot(whipSound);
     }
     public void PlayGameMusic()
     {
@@ -59,18 +75,7 @@ public class SoundManager : MonoBehaviour
         audioSource.loop = false;
         audioSource.Stop();
     }
-    IEnumerator CorrectSound()
-    {
-        yield return new WaitForSeconds(0);
-        audioSource.clip = correct;
-        audioSource.Play();
-    }
-    IEnumerator IncorrectSound()
-    {
-        yield return new WaitForSeconds(0);
-        audioSource.clip = incorrect;
-        audioSource.Play();
-    }
+
     IEnumerator MenuMusic()
     {
         yield return new WaitForSeconds(0);

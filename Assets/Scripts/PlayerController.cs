@@ -51,6 +51,10 @@ public class PlayerController : MonoBehaviour
 
     private SoundManager soundManager;
 
+    public GameObject pauseMenu;
+
+    public bool gamePaused = false;
+
     private void Awake()
     {
         soundManager = GameObject.Find("SoundManager").GetComponent<SoundManager>();
@@ -63,11 +67,35 @@ public class PlayerController : MonoBehaviour
         soundManager.PlayMenuMusic();
     }
 
+    public void PauseGame()
+    {
+        gamePaused = !gamePaused;
+        soundManager.PlayPause();
+        pauseMenu.SetActive(!pauseMenu.activeSelf);
+        if (Time.timeScale == 0)
+        {
+            Time.timeScale = 1;
+        }
+        else
+        {
+            Time.timeScale = 0;
+        }
+    }
+
     private void PlayerInput_onActionTriggered(InputAction.CallbackContext context)
     {
         //only do actions when button is pressed (rather than on being held or released)
-        if (context.started)
+        if (context.started && !gamePaused)
         {
+
+            //allow either play to pause game
+            if (gameState != "starting") 
+            {
+                if (context.action == playerInput.actions.FindAction("Start1")) { PauseGame(); }
+                if (context.action == playerInput.actions.FindAction("Start2")) { PauseGame(); }
+                    if (context.action == playerInput.actions.FindAction("Start3")) { PauseGame(); }
+            }
+
             //handle inputs during player selection
             if (gameState == "player select")
             {
@@ -78,6 +106,7 @@ public class PlayerController : MonoBehaviour
                     LeftP1Text.SetActive(true);
                     RightP1Text.SetActive(false);
                     MiddleP1Text.SetActive(false);
+                    soundManager.PlayButtonHover();
                 }
 
                 if (context.action == playerInput.actions.FindAction("RIGHT1"))
@@ -86,6 +115,7 @@ public class PlayerController : MonoBehaviour
                     LeftP1Text.SetActive(false);
                     RightP1Text.SetActive(true);
                     MiddleP1Text.SetActive(false);
+                    soundManager.PlayButtonHover();
                 }
 
                 //allow ps controller to select player
@@ -95,6 +125,7 @@ public class PlayerController : MonoBehaviour
                     LeftP2Text.SetActive(true);
                     RightP2Text.SetActive(false);
                     MiddleP2Text.SetActive(false);
+                    soundManager.PlayButtonHover();
                 }
 
                 if (context.action == playerInput.actions.FindAction("RIGHT2"))
@@ -103,6 +134,7 @@ public class PlayerController : MonoBehaviour
                     LeftP2Text.SetActive(false);
                     RightP2Text.SetActive(true);
                     MiddleP2Text.SetActive(false);
+                    soundManager.PlayButtonHover();
                 }
 
                 //start game if start pressed while active
@@ -247,6 +279,10 @@ public class PlayerController : MonoBehaviour
                 SelectPlayerText.SetActive(true);
             }
         }
+
+
+
+
 
     }
 }
