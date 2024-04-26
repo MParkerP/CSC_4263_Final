@@ -49,11 +49,18 @@ public class PlayerController : MonoBehaviour
 
     private PlayerInput playerInput;
 
+    private SoundManager soundManager;
 
     private void Awake()
     {
+        soundManager = GameObject.Find("SoundManager").GetComponent<SoundManager>();
         playerInput = GetComponent<PlayerInput>();
         playerInput.onActionTriggered += PlayerInput_onActionTriggered;
+    }
+
+    private void Start()
+    {
+        soundManager.PlayMenuMusic();
     }
 
     private void PlayerInput_onActionTriggered(InputAction.CallbackContext context)
@@ -104,8 +111,10 @@ public class PlayerController : MonoBehaviour
                 {
                     if (context.action == playerInput.actions.FindAction("A1") || context.action == playerInput.actions.FindAction("A2"))
                     {
-                    StartGame();
+                     StartGame();
+
                     }
+                   
                 }
                 
             }
@@ -168,6 +177,8 @@ public class PlayerController : MonoBehaviour
         PressStartText.SetActive(false);
         hudScript = GameObject.Find("HUD").GetComponent<HUDscript>();
         hudScript.StartCountdown();
+        soundManager.StopMusic();
+        soundManager.PlayCountDownMusic();
     }
 
     public void FreezeInput(int player)

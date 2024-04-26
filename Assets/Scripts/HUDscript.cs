@@ -33,11 +33,16 @@ public class HUDscript : MonoBehaviour
 
     public GameObject controlsImage;
 
+    private SoundManager soundManager;
+    private SoundManager soundManager2;
+
     // Start is called before the first frame update
     void Start()
     {
         player1 = GameObject.Find("Sheriff").GetComponent<PlayerAnimator>();
         player2 = GameObject.Find("Bandit").GetComponent<PlayerAnimator>();
+        soundManager = GameObject.Find("SoundManager").GetComponent<SoundManager>();   
+        soundManager2 = GameObject.Find("SoundManager2").GetComponent<SoundManager>();
     }
 
     IEnumerator PlayerWin(int playerWinner)
@@ -130,6 +135,8 @@ public class HUDscript : MonoBehaviour
 
     IEnumerator countDown()
     {
+        soundManager2.StopMusic();
+        soundManager.PlayCountDownMusic();
         waitOnLast = Random.Range(2, 6);
         one.GetComponent<Animator>().SetTrigger("Fade");
         yield return new WaitForSeconds(2);
@@ -138,6 +145,9 @@ public class HUDscript : MonoBehaviour
         three.GetComponent<Animator>().SetTrigger("Fade");
         GameObject.Find("ButtonManager").GetComponent<buttonManager>().makePlayerCombos();
         controlsImage.SetActive(true);
+        soundManager.StopMusic();
+        soundManager.PlayWhipSound();
+        soundManager2.PlayGameMusic();
     }
 
     public void StartCountdown()
