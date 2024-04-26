@@ -145,7 +145,7 @@ public class buttonManager : MonoBehaviour
         P1ComboString = generateCombo(10, P1CMArray);
         P2ComboString = generateCombo(10, P2CMArray);
 
-}
+    }
 
     public void StartNewRound()
     {
@@ -156,6 +156,7 @@ public class buttonManager : MonoBehaviour
     {
         playerController.SetGameState("RoundTransition");
         hideAllButtons();
+        hudScript.controlsImage.SetActive(false);
         yield return new WaitForSeconds(roundDelay);
 
         int p1Lives = hudScript.livesCount - hudScript.p1LivesLost;

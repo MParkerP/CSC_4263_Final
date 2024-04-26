@@ -31,6 +31,8 @@ public class HUDscript : MonoBehaviour
     public GameObject BanditWins;
     public GameObject SheriffWins;
 
+    public GameObject controlsImage;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -135,6 +137,7 @@ public class HUDscript : MonoBehaviour
         yield return new WaitForSeconds(waitOnLast);
         three.GetComponent<Animator>().SetTrigger("Fade");
         GameObject.Find("ButtonManager").GetComponent<buttonManager>().makePlayerCombos();
+        controlsImage.SetActive(true);
     }
 
     public void StartCountdown()
