@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Transactions;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -27,6 +28,25 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private bool p1DpadOpen = true;
     [SerializeField] private bool p2DpadOpen = true;
+
+    public GameObject controlsImage;
+
+    public Button[] PauseMenuButtons;
+    private int PauseMenuPointer = 0;
+
+    public Button[] MainMenuButtons;
+    private int MainMenuPointer = -1;
+
+    public Button Info_Back_Button;
+    private bool isInfoUp = false;
+
+    /*    public Button pause_Menu_Button;
+        public Button pause_Back_Button;
+
+        public Button mainMenu_Quit_Button;
+        public Button mainMenu_Play_Button;
+        public Button mainMenu_Info_Button;
+        public Button mainMenu_Info_Back_Button;*/
 
 
     //---------Player Input Definitions----------// 
@@ -67,9 +87,16 @@ public class PlayerController : MonoBehaviour
         soundManager.PlayMenuMusic();
     }
 
+    public void ShowInfo()
+    {
+        isInfoUp = true;
+        Info_Back_Button.Select();
+    }
+
     public void PauseGame()
     {
         gamePaused = !gamePaused;
+        if (gamePaused) { PauseMenuButtons[PauseMenuPointer].Select(); }
         soundManager.PlayPause();
         pauseMenu.SetActive(!pauseMenu.activeSelf);
         if (Time.timeScale == 0)
@@ -84,16 +111,103 @@ public class PlayerController : MonoBehaviour
 
     private void PlayerInput_onActionTriggered(InputAction.CallbackContext context)
     {
-        //only do actions when button is pressed (rather than on being held or released)
-        if (context.started && !gamePaused)
+        if (context.started && gameState != "starting")
         {
-
             //allow either play to pause game
-            if (gameState != "starting") 
+            if (gameState != "starting")
             {
                 if (context.action == playerInput.actions.FindAction("Start1")) { PauseGame(); }
                 if (context.action == playerInput.actions.FindAction("Start2")) { PauseGame(); }
-                    if (context.action == playerInput.actions.FindAction("Start3")) { PauseGame(); }
+                if (context.action == playerInput.actions.FindAction("Start3")) { PauseGame(); }
+            }
+        }
+
+        if (context.started && gamePaused) 
+        { 
+            if (context.action == playerInput.actions.FindAction("A1") || context.action == playerInput.actions.FindAction("A2"))
+            {
+                PauseMenuButtons[PauseMenuPointer].onClick.Invoke();
+            }
+            
+            if (context.action == playerInput.actions.FindAction("UP1") || context.action == playerInput.actions.FindAction("UP2"))
+            {
+                if (PauseMenuPointer < 1)
+                {
+                    soundManager.PlayButtonHover();
+                    PauseMenuButtons[PauseMenuPointer].Select();
+                    PauseMenuPointer++;
+                    PauseMenuButtons[PauseMenuPointer].Select();
+                }
+            }
+
+            if (context.action == playerInput.actions.FindAction("DOWN1") || context.action == playerInput.actions.FindAction("DOWN2"))
+            {
+                if (PauseMenuPointer > 0)
+                {
+                    soundManager.PlayButtonHover();
+                    PauseMenuButtons[PauseMenuPointer].Select();
+                    PauseMenuPointer--;
+                    PauseMenuButtons[PauseMenuPointer].Select();
+                }
+            }
+        }
+        //only do actions when button is pressed (rather than on being held or released)
+        if (context.started && !gamePaused)
+        {
+            if (gameState == "starting")
+            {
+                if (!isInfoUp)
+                {
+
+
+                    if (context.action == playerInput.actions.FindAction("A1") || context.action == playerInput.actions.FindAction("A2"))
+                    {
+                        MainMenuButtons[MainMenuPointer].onClick.Invoke();
+                    }
+
+                    if (context.action == playerInput.actions.FindAction("UP1") || context.action == playerInput.actions.FindAction("UP2"))
+                    {
+                        if (MainMenuPointer == -1)
+                        {
+                            MainMenuPointer = 0;
+                            MainMenuButtons[MainMenuPointer].Select();
+                        }
+
+                        if (MainMenuPointer < 2)
+                        {
+                            soundManager.PlayButtonHover();
+                            MainMenuButtons[MainMenuPointer].Select();
+                            MainMenuPointer++;
+                            MainMenuButtons[MainMenuPointer].Select();
+                        }
+                    }
+
+                    if (context.action == playerInput.actions.FindAction("DOWN1") || context.action == playerInput.actions.FindAction("DOWN2"))
+                    {
+                        if (MainMenuPointer == -1)
+                        {
+                            MainMenuPointer = 0;
+                            MainMenuButtons[MainMenuPointer].Select();
+                        }
+
+                        if (MainMenuPointer > 0)
+                        {
+                            soundManager.PlayButtonHover();
+                            MainMenuButtons[MainMenuPointer].Select();
+                            MainMenuPointer--;
+                            MainMenuButtons[MainMenuPointer].Select();
+                        }
+                    }
+                }
+
+                if (isInfoUp)
+                {
+                    if (context.action == playerInput.actions.FindAction("B1") || context.action == playerInput.actions.FindAction("B2"))
+                    {
+                        Info_Back_Button.onClick.Invoke();
+                        isInfoUp = false;
+                    }
+                }
             }
 
             //handle inputs during player selection
@@ -206,6 +320,7 @@ public class PlayerController : MonoBehaviour
     void StartGame()
     {
         gameState = "playing";
+        controlsImage.SetActive(true);
         PressStartText.SetActive(false);
         hudScript = GameObject.Find("HUD").GetComponent<HUDscript>();
         hudScript.StartCountdown();

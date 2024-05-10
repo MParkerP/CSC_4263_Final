@@ -156,7 +156,6 @@ public class buttonManager : MonoBehaviour
     {
         playerController.SetGameState("RoundTransition");
         hideAllButtons();
-        hudScript.controlsImage.SetActive(false);
         yield return new WaitForSeconds(roundDelay);
 
         int p1Lives = hudScript.livesCount - hudScript.p1LivesLost;

@@ -144,7 +144,6 @@ public class HUDscript : MonoBehaviour
         yield return new WaitForSeconds(waitOnLast);
         three.GetComponent<Animator>().SetTrigger("Fade");
         GameObject.Find("ButtonManager").GetComponent<buttonManager>().makePlayerCombos();
-        controlsImage.SetActive(true);
         soundManager.StopMusic();
         soundManager.PlayWhipSound();
         soundManager2.PlayGameMusic();
